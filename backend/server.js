@@ -1,4 +1,6 @@
 const express = require('express');
+const dotenv = require('dotenv').config();
+const path = require('path');
 const fileUpload = require('express-fileupload');
 const xlformat = require('./services/xlformat');
 const app = express();
@@ -18,16 +20,30 @@ app.post('/upload', async (req, res) => {
 
   const file = req.files.file;
 
-  await file.mv(`./client/public/uploads/${file.name}`, (err) => {
+  await file.mv(`./client/build/uploads/${file.name}`, (err) => {
     if (err) {
       console.error(err);
       res.status(500).send(err);
     }
+    const summary = xlformat(file);
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+    return res.send(summary);
   });
-  const summary = await xlformat(file);
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
-  return res.send(summary);
 });
 
-app.get('/', (req, res) => res.send('Hello World!'));
+// Serve Frontend
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../client/build')));
+
+  app.get('*', (req, res) => {
+    res.sendFile(
+      path.resolve(__dirname, '../', 'client', 'build', 'index.html')
+    );
+  });
+} else {
+  app.get('/', (req, res) => {
+    res.send('Please set to production');
+  });
+}
+
 app.listen(port, () => console.log(`Server listening on port ${port}`));

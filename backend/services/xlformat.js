@@ -1,7 +1,7 @@
 const xlsx = require('xlsx');
 const path = require('path');
 const xlformat = (file) => {
-  const path = `./client/public/uploads/${file.name}`;
+  const path = `./client/build/uploads/${file.name}`;
   const WB = xlsx.readFile(path);
   const shipmentWS = WB.Sheets['Shipment'];
   const shipmentJSON = xlsx.utils.sheet_to_json(shipmentWS);

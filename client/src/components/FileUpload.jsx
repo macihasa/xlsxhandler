@@ -21,15 +21,11 @@ const FileUpload = () => {
 
     try {
       // Request to server
-      const response = await axios.post(
-        'http://localhost:5000/upload',
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        }
-      );
+      const response = await axios.post('/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
       // Set the uploaded file on success
       const {
         data,

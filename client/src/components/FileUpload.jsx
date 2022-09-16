@@ -1,15 +1,19 @@
 import { Fragment, useState } from 'react';
 import axios from 'axios';
+import TableFormat from './TableFormat';
 
 const FileUpload = () => {
   const [file, setFile] = useState();
   const [fileName, setFileName] = useState('Choose File');
-  const [uploadedFile, setUploadedFile] = useState();
+  const [formattedData, setFormattedData] = useState();
+
+  // Sets the chosen file to state
   const handleFile = (e) => {
     setFile(e.target.files[0]);
     setFileName(e.target.files[0].name);
   };
 
+  // Sends a request to the server containing the chosen file from handleFile
   const onSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
@@ -17,19 +21,38 @@ const FileUpload = () => {
 
     try {
       // Request to server
-      const response = await axios.post('/upload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      const response = await axios.post(
+        'http://localhost:5000/upload',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
       // Set the uploaded file on success
-      const { fileName, filePath } = response.data;
-      setUploadedFile({ fileName, filePath });
+      const {
+        data,
+        dataAWB,
+        cdShipments,
+        cdShipmentsAWB,
+        shipmentsToRemove,
+        shipmentsToRemoveAWB,
+      } = response.data;
+      // Set the data to state
+      setFormattedData({
+        data,
+        dataAWB,
+        cdShipments,
+        cdShipmentsAWB,
+        shipmentsToRemove,
+        shipmentsToRemoveAWB,
+      });
     } catch (err) {
       if (err.response.status === 500) {
         console.log('There was a problem with the server');
       } else {
-        console.log(err.response.data.msg);
+        console.log(err.response.data);
       }
     }
   };
@@ -54,6 +77,27 @@ const FileUpload = () => {
           />
         </div>
       </form>
+      {formattedData ? (
+        <div className="tabledata">
+          <TableFormat
+            tableName={'Shipments to remove'}
+            table={formattedData.shipmentsToRemove}
+            AWB={formattedData.shipmentsToRemoveAWB}
+          />
+          <TableFormat
+            tableName={'Shipments with checkpoint'}
+            table={formattedData.cdShipments}
+            AWB={formattedData.cdShipmentsAWB}
+          />
+          <TableFormat
+            tableName={'All shipments'}
+            table={formattedData.data}
+            AWB={formattedData.dataAWB}
+          />
+        </div>
+      ) : (
+        <></>
+      )}
     </Fragment>
   );
 };

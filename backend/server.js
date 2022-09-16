@@ -26,7 +26,7 @@ app.post('/upload', async (req, res) => {
       res.status(500).send(err);
     }
     const summary = xlformat(file);
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5000');
     return res.send(summary);
   });
 });

@@ -15,6 +15,7 @@ app.use(express.urlencoded({ extended: false }));
 // upload enpoint
 app.post('/upload', async (req, res) => {
   if (req.files === null) {
+    cl;
     return res.status(400).json({ msg: 'no file uploaded' });
   }
 
@@ -26,7 +27,7 @@ app.post('/upload', async (req, res) => {
       res.status(500).send(err);
     }
     const summary = xlformat(file);
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5000');
+    res.setHeader('Access-Control-Allow-Origin');
     return res.send(summary);
   });
 });

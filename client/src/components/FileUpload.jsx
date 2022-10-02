@@ -85,7 +85,7 @@ const FileUpload = () => {
             AWB={formattedData.shipmentsToRemoveAWB}
           />
           <TableFormat
-            tableName={'Shipments with checkpoint'}
+            tableName={'Shipments with checkpoint outside of SE'}
             table={formattedData.cdShipments}
             AWB={formattedData.cdShipmentsAWB}
           />
